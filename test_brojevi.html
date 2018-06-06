@@ -1,0 +1,220 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+	<meta charset="utf-8" />
+	<title>Test 1.0</title>
+
+	
+	<script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+	<!--<script src="//cdn.jsdelivr.net/npm/phaser@3.2.1/dist/phaser.js"></script>-->
+	<script type="text/javascript" src="dist/phaser.js"></script>
+	<style type="text/css">
+	body {
+		margin:0;
+	}
+	canvas {
+
+		width: 100%;
+		height: 100%;
+		
+	}
+</style>
+</head>
+<body>
+
+	<div id="phaser-example"></div>
+
+	<script type="text/javascript">
+
+		var config = {
+			type: Phaser.AUTO,
+			parent: 'phaser-example',
+			width: 800,
+			height: 600,
+			backgroundColor: '#2d2d2d',
+			scene: {
+				preload: preload,
+				create: create
+			}
+		};
+
+		var game = new Phaser.Game(config);
+		var player = { 
+			FBID : 12345,
+			score : 0,
+			time : 0,
+			level : 1
+		};
+		var button;
+		var buttons = new Array();
+		window.focus();
+		resize();
+
+        var playerNums = 2; // game is for 2 gamers after much more
+        var lvlGame = 10;
+        var numberByLvl = 4;
+        var NumAll = lvlGame * numberByLvl;
+        var NumByRow = 10;
+        var NumGues = 0;
+        var NumCount = 0;
+        var topMenu = 100;
+        var info;
+        var infos = new Array();
+        var menutext;
+        var oThis;
+
+        function preload ()
+        {
+            //game.load.spritesheet('button', 'assets/buttons/button_sprite_sheet.png', 193, 71);
+            this.load.spritesheet('button', 'assets/demoscene/blue_ball.png',{ frameWidth: 48, frameHeight: 48 });
+            
+        }
+
+        function create ()
+        {   
+        	button = this.add.image(-500, 50, 'button');
+            //info = this.add.text(-500, 50, 'AAAAAAAA', { font: '16px Arial', fill: '#FF0000' });
+            menutext = this.add.text(50, 50, 'score: ' + player.score, { fontSize: '32px', fill: '#FFF' });
+            button.setInteractive();
+            
+            button.on('clicked', actionOnClick, this);
+            
+            this.input.on('gameobjectup', function (pointer, gameObject)
+            {
+            	gameObject.emit('clicked', gameObject);
+            }, this);
+            
+            createTable(this);            
+            oThis = this;
+
+        }
+
+        function menubar()
+        {
+            //menutext = th.add.text(50, 50, 'score: ' + player.score, { fontSize: '32px', fill: '#000' });
+            menutext.setText( 'score: ' + player.score );
+        }
+
+        function actionOnClick (gameObject) {            
+
+        	clickNo = gameObject.id;
+
+        	if (clickNo == NumGues)
+        	{
+        		alert("super pogodili ste iz " + NumCount);
+                //alert(player.FBID);
+                GameOver();
+            }
+
+            if (NumGues < clickNo)
+            {
+            	alert("manji");
+            	NumCount++; 
+            	player.score++;
+            	menubar();
+            	oThis.tweens.add({
+            		targets: gameObject,        
+            		duration: 3000,
+            		alpha : 0,                    
+            		delay: 1000,
+            		loop : 0
+            	});
+
+            	info = infos[clickNo];
+            	info.visible = false;                
+            }
+
+            if (NumGues > clickNo)
+            {
+            	alert("veći");
+            	NumCount++;
+            	player.score++;            
+            	menubar();
+            	oThis.tweens.add({
+            		targets: gameObject,        
+            		duration: 3000,
+            		alpha : 0,                    
+            		delay: 1000,
+            		loop : 0
+            	});
+            	info = infos[clickNo];
+            	info.visible = false;
+            }
+
+        }
+
+        function GameOver()
+        {
+        	player.level = lvlGame;
+        	$.ajax
+        	({
+        		type: "GET",
+        		dataType : 'json',
+        		async: true,
+        		url: 'http://localhost:55//save_json.php',
+        		data: { data: JSON.stringify(player) },
+        		success: function () {alert("Thanks!"); },
+        		failure: function() {alert("Error!");}
+        	});
+        }
+
+        function createTable(th)
+        {
+        	var red = 1;
+        	var colona = 1;
+        	for (i=0;i<NumAll;i++)
+        	{
+        		colona = colona + 1;
+        		button = th.add.image(colona * 50, red * 50 + topMenu, 'button');
+        		button.id = i;
+        		info = th.add.text(colona * 50-5, red * 50 + topMenu-10, i, { font: '16px Arial', fill: '#FF0000' });
+
+        		button.setInteractive();
+        		button.on('clicked', actionOnClick, this);
+        		buttons.push(button);
+        		infos.push(info);
+
+        		if(colona>NumByRow)
+        		{
+        			red=red + 1;
+        			colona = 1;
+        		}
+
+        	}
+
+        	NumGues = Math.floor(Math.random() * NumAll);
+
+        }
+
+
+        
+        //var pcanvas;
+
+        function resize() {
+            /*
+            pcanvas = $("canvas");
+            var windowWidth = window.innerWidth;
+            var windowHeight = window.innerHeight;
+            var windowRatio = windowWidth / windowHeight;
+            var gameRatio = game.config.width / game.config.height;
+            if(windowRatio < gameRatio){
+                pcanvas.style.width = windowWidth + "px";
+                pcanvas.style.height = (windowWidth / gameRatio) + "px";
+            }
+            else{
+                pcanvas.style.width = (windowHeight * gameRatio) + "px";
+                pcanvas.style.height = windowHeight + "px";
+            }
+            */
+            
+        }
+
+
+
+
+
+
+    </script>
+
+</body>
+</html>

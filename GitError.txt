@@ -1,0 +1,27 @@
+Microsoft Windows [Version 10.0.17133.1]
+(c) 2018 Microsoft Corporation. All rights reserved.
+
+K:\kPicola>git init
+Reinitialized existing Git repository in K:/kPicola/.git/
+
+K:\kPicola>git push
+fatal: HttpRequestException encountered.
+   An error occurred while sending the request.
+Username for 'https://github.com': kplusplus
+Password for 'https://kplusplus@github.com':
+Counting objects: 2114, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (1848/1848), done.
+Writing objects: 100% (2114/2114), 723.20 MiB | 76.00 KiB/s, done.
+Total 2114 (delta 280), reused 2063 (delta 263)
+remote: Resolving deltas: 100% (280/280), completed with 2 local objects.
+remote: error: GH001: Large files detected. You may want to try Git Large File Storage - https://git-lfs.github.com.
+remote: error: Trace: fcb5c8c90cdda98c4d4d15f1b9abcbb2
+remote: error: See http://git.io/iEPt8g for more information.
+remote: error: File Documents/phaser-examples-master.zip is 166.93 MB; this exceeds GitHub's file size limit of 100.00 MB
+remote: error: File Documents/phaser3-examples-master.zip is 282.23 MB; this exceeds GitHub's file size limit of 100.00 MB
+To https://github.com/kPlusPlus/kPicola.git
+ ! [remote rejected] master -> master (pre-receive hook declined)
+error: failed to push some refs to 'https://github.com/kPlusPlus/kPicola.git'
+
+K:\kPicola>git push

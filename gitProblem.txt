@@ -1,0 +1,13 @@
+git config http.postBuffer 524288000
+
+$ git remote add origin git@github.com:username/project.git
+
+#ovo čisti smeće
+git gc --aggressive
+
+
+
+
+
+
+git config --global http.postBuffer 157286400

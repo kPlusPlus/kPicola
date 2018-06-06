@@ -1,0 +1,22 @@
+Microsoft Windows [Version 10.0.17133.1]
+(c) 2018 Microsoft Corporation. All rights reserved.
+
+K:\kPicola>git init
+Reinitialized existing Git repository in K:/kPicola/.git/
+
+K:\kPicola>git push
+fatal: HttpRequestException encountered.
+   An error occurred while sending the request.
+Username for 'https://github.com': kplusplus
+Password for 'https://kplusplus@github.com':
+Counting objects: 2114, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (1848/1848), done.
+rror: RPC failed; curl 56 Send failure: Connection was reset
+fatal: The remote end hung up unexpectedly
+Writing objects: 100% (2114/2114), 723.20 MiB | 2.28 MiB/s, done.
+Total 2114 (delta 282), reused 2063 (delta 263)
+fatal: The remote end hung up unexpectedly
+Everything up-to-date
+
+K:\kPicola>
