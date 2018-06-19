@@ -41,6 +41,7 @@
 		var game = new Phaser.Game(config);
 		var player = { 
 			FBID : 12345,
+            name : 'noname',
 			score : 0,
 			time : 0,
 			level : 1
@@ -74,7 +75,7 @@
         {   
         	button = this.add.image(-500, 50, 'button');
             //info = this.add.text(-500, 50, 'AAAAAAAA', { font: '16px Arial', fill: '#FF0000' });
-            menutext = this.add.text(50, 50, 'score: ' + player.score, { fontSize: '32px', fill: '#FFF' });
+            menutext = this.add.text(50, 50, 'score: ' + player.score, { fontSize: '20px', fill: '#FFF' });
             button.setInteractive();
             
             button.on('clicked', actionOnClick, this);
@@ -92,7 +93,7 @@
         function menubar()
         {
             //menutext = th.add.text(50, 50, 'score: ' + player.score, { fontSize: '32px', fill: '#000' });
-            menutext.setText( 'score: ' + player.score );
+            menutext.setText( 'level ' + player.level + ' player ' + player.name + ' score: ' + player.score );
         }
 
         function actionOnClick (gameObject) {            
