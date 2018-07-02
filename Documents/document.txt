@@ -1,0 +1,2 @@
+odavde sam skinuo
+https://symfony.com/doc/current/doctrine.html

@@ -103,8 +103,7 @@ from newly opened EntityManager.
         /** @OneToMany(targetEntity="Comment", mappedBy="article") */
         private $comments;
     
-        public function __construct()
-        {
+        public function __construct {
             $this->comments = new ArrayCollection();
         }
     
@@ -115,7 +114,7 @@ from newly opened EntityManager.
     $article = $em->find('Article', 1);
 
 This code only retrieves the ``Article`` instance with id 1 executing
-a single SELECT statement against the articles table in the database.
+a single SELECT statement against the user table in the database.
 You can still access the associated properties author and comments
 and the associated objects they contain.
 
@@ -144,7 +143,7 @@ your code. See the following code:
     // accessing the comments as an iterator triggers the lazy-load
     // retrieving ALL the comments of this article from the database
     // using a single SELECT statement
-    foreach ($article->getComments() as $comment) {
+    foreach ($article->getComments() AS $comment) {
         echo $comment->getText() . "\n\n";
     }
     
@@ -238,7 +237,7 @@ as follows:
    persist operation. However, the persist operation is cascaded to
    entities referenced by X, if the relationships from X to these
    other entities are mapped with cascade=PERSIST or cascade=ALL (see
-   ":ref:`Transitive Persistence <transitive-persistence>`").
+   "Transitive Persistence").
 -  If X is a removed entity, it becomes managed.
 -  If X is a detached entity, an exception will be thrown on
    flush.
@@ -279,12 +278,12 @@ as follows:
 -  If X is a new entity, it is ignored by the remove operation.
    However, the remove operation is cascaded to entities referenced by
    X, if the relationship from X to these other entities is mapped
-   with cascade=REMOVE or cascade=ALL (see ":ref:`Transitive Persistence <transitive-persistence>`").
+   with cascade=REMOVE or cascade=ALL (see "Transitive Persistence").
 -  If X is a managed entity, the remove operation causes it to
    become removed. The remove operation is cascaded to entities
    referenced by X, if the relationships from X to these other
    entities is mapped with cascade=REMOVE or cascade=ALL (see
-   ":ref:`Transitive Persistence <transitive-persistence>`").
+   "Transitive Persistence").
 -  If X is a detached entity, an InvalidArgumentException will be
    thrown.
 -  If X is a removed entity, it is ignored by the remove operation.
@@ -350,14 +349,14 @@ as follows:
    become detached. The detach operation is cascaded to entities
    referenced by X, if the relationships from X to these other
    entities is mapped with cascade=DETACH or cascade=ALL (see
-   ":ref:`Transitive Persistence <transitive-persistence>`"). Entities which previously referenced X
+   "Transitive Persistence"). Entities which previously referenced X
    will continue to reference X.
 -  If X is a new or detached entity, it is ignored by the detach
    operation.
 -  If X is a removed entity, the detach operation is cascaded to
    entities referenced by X, if the relationships from X to these
    other entities is mapped with cascade=DETACH or cascade=ALL (see
-   ":ref:`Transitive Persistence <transitive-persistence>`"). Entities which previously referenced X
+   "Transitive Persistence"). Entities which previously referenced X
    will continue to reference X.
 
 There are several situations in which an entity is detached
@@ -416,7 +415,8 @@ as follows:
 -  If X is a managed entity, it is ignored by the merge operation,
    however, the merge operation is cascaded to entities referenced by
    relationships from X if these relationships have been mapped with
-   the cascade element value MERGE or ALL (see ":ref:`Transitive Persistence <transitive-persistence>`").
+   the cascade element value MERGE or ALL (see "Transitive
+   Persistence").
 -  For all entities Y referenced by relationships from X having the
    cascade element value MERGE or ALL, Y is merged recursively as Y'.
    For all such Y referenced by X, X' is set to reference Y'. (Note
@@ -698,6 +698,8 @@ You can also load by owning side associations through the repository:
     $number = $em->find('MyProject\Domain\Phonenumber', 1234);
     $user = $em->getRepository('MyProject\Domain\User')->findOneBy(array('phone' => $number->getId()));
 
+Be careful that this only works by passing the ID of the associated entity, not yet by passing the associated entity itself.
+
 The ``EntityRepository#findBy()`` method additionally accepts orderings, limit and offset as second to fourth parameters:
 
 .. code-block:: php
@@ -726,14 +728,6 @@ examples are equivalent:
     // A single user by its nickname (__call magic)
     $user = $em->getRepository('MyProject\Domain\User')->findOneByNickname('romanb');
 
-Additionally, you can just count the result of the provided conditions when you don't really need the data:
-
-.. code-block:: php
-
-    <?php
-    // Check there is no user with nickname
-    $availableNickname = 0 === $em->getRepository('MyProject\Domain\User')->count(['nickname' => 'nonexistent']);
-
 By Criteria
 ~~~~~~~~~~~
 
@@ -743,7 +737,8 @@ The Repository implement the ``Doctrine\Common\Collections\Selectable``
 interface. That means you can build ``Doctrine\Common\Collections\Criteria``
 and pass them to the ``matching($criteria)`` method.
 
-See section `Filtering collections` of chapter :doc:`Working with Associations <working-with-associations>`
+See the :ref:`Working with Associations: Filtering collections
+<filtering-collections>`.
 
 By Eager Loading
 ~~~~~~~~~~~~~~~~
@@ -825,10 +820,9 @@ in a central location.
     namespace MyDomain\Model;
     
     use Doctrine\ORM\EntityRepository;
-    use Doctrine\ORM\Mapping as ORM;
     
     /**
-     * @ORM\Entity(repositoryClass="MyDomain\Model\UserRepository")
+     * @entity(repositoryClass="MyDomain\Model\UserRepository")
      */
     class User
     {

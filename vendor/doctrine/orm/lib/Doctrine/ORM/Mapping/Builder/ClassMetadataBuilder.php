@@ -25,7 +25,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Builder Object for ClassMetadata
  *
- * @license     http://www.opensource.org/licenses/mit-license.php MIT
+ * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        www.doctrine-project.com
  * @since       2.2
  * @author      Benjamin Eberlei <kontakt@beberlei.de>
@@ -62,42 +62,6 @@ class ClassMetadataBuilder
     public function setMappedSuperClass()
     {
         $this->cm->isMappedSuperclass = true;
-        $this->cm->isEmbeddedClass = false;
-
-        return $this;
-    }
-
-    /**
-     * Marks the class as embeddable.
-     *
-     * @return ClassMetadataBuilder
-     */
-    public function setEmbeddable()
-    {
-        $this->cm->isEmbeddedClass = true;
-        $this->cm->isMappedSuperclass = false;
-
-        return $this;
-    }
-
-    /**
-     * Adds and embedded class
-     *
-     * @param string      $fieldName
-     * @param string      $class
-     * @param string|null $columnPrefix
-     *
-     * @return $this
-     */
-    public function addEmbedded($fieldName, $class, $columnPrefix = null)
-    {
-        $this->cm->mapEmbedded(
-            [
-                'fieldName'    => $fieldName,
-                'class'        => $class,
-                'columnPrefix' => $columnPrefix
-            ]
-        );
 
         return $this;
     }
@@ -137,7 +101,7 @@ class ClassMetadataBuilder
      */
     public function setTable($name)
     {
-        $this->cm->setPrimaryTable(['name' => $name]);
+        $this->cm->setPrimaryTable(array('name' => $name));
 
         return $this;
     }
@@ -153,10 +117,10 @@ class ClassMetadataBuilder
     public function addIndex(array $columns, $name)
     {
         if (!isset($this->cm->table['indexes'])) {
-            $this->cm->table['indexes'] = [];
+            $this->cm->table['indexes'] = array();
         }
 
-        $this->cm->table['indexes'][$name] = ['columns' => $columns];
+        $this->cm->table['indexes'][$name] = array('columns' => $columns);
 
         return $this;
     }
@@ -172,10 +136,10 @@ class ClassMetadataBuilder
     public function addUniqueConstraint(array $columns, $name)
     {
         if ( ! isset($this->cm->table['uniqueConstraints'])) {
-            $this->cm->table['uniqueConstraints'] = [];
+            $this->cm->table['uniqueConstraints'] = array();
         }
 
-        $this->cm->table['uniqueConstraints'][$name] = ['columns' => $columns];
+        $this->cm->table['uniqueConstraints'][$name] = array('columns' => $columns);
 
         return $this;
     }
@@ -190,12 +154,10 @@ class ClassMetadataBuilder
      */
     public function addNamedQuery($name, $dqlQuery)
     {
-        $this->cm->addNamedQuery(
-            [
-                'name' => $name,
-                'query' => $dqlQuery,
-            ]
-        );
+        $this->cm->addNamedQuery(array(
+            'name' => $name,
+            'query' => $dqlQuery,
+        ));
 
         return $this;
     }
@@ -235,13 +197,11 @@ class ClassMetadataBuilder
      */
     public function setDiscriminatorColumn($name, $type = 'string', $length = 255)
     {
-        $this->cm->setDiscriminatorColumn(
-            [
-                'name' => $name,
-                'type' => $type,
-                'length' => $length,
-            ]
-        );
+        $this->cm->setDiscriminatorColumn(array(
+            'name' => $name,
+            'type' => $type,
+            'length' => $length,
+        ));
 
         return $this;
     }
@@ -309,7 +269,7 @@ class ClassMetadataBuilder
      *
      * @return ClassMetadataBuilder
      */
-    public function addField($name, $type, array $mapping = [])
+    public function addField($name, $type, array $mapping = array())
     {
         $mapping['fieldName'] = $name;
         $mapping['type'] = $type;
@@ -331,30 +291,10 @@ class ClassMetadataBuilder
     {
         return new FieldBuilder(
             $this,
-            [
+            array(
                 'fieldName' => $name,
                 'type'      => $type
-            ]
-        );
-    }
-
-    /**
-     * Creates an embedded builder.
-     *
-     * @param string $fieldName
-     * @param string $class
-     *
-     * @return EmbeddedBuilder
-     */
-    public function createEmbedded($fieldName, $class)
-    {
-        return new EmbeddedBuilder(
-            $this,
-            [
-                'fieldName'    => $fieldName,
-                'class'        => $class,
-                'columnPrefix' => null
-            ]
+            )
         );
     }
 
@@ -392,10 +332,10 @@ class ClassMetadataBuilder
     {
         return new AssociationBuilder(
             $this,
-            [
+            array(
                 'fieldName'    => $name,
                 'targetEntity' => $targetEntity
-            ],
+            ),
             ClassMetadata::MANY_TO_ONE
         );
     }
@@ -412,10 +352,10 @@ class ClassMetadataBuilder
     {
         return new AssociationBuilder(
             $this,
-            [
+            array(
                 'fieldName'    => $name,
                 'targetEntity' => $targetEntity
-            ],
+            ),
             ClassMetadata::ONE_TO_ONE
         );
     }
@@ -469,10 +409,10 @@ class ClassMetadataBuilder
     {
         return new ManyToManyAssociationBuilder(
             $this,
-            [
+            array(
                 'fieldName'    => $name,
                 'targetEntity' => $targetEntity
-            ],
+            ),
             ClassMetadata::MANY_TO_MANY
         );
     }
@@ -526,10 +466,10 @@ class ClassMetadataBuilder
     {
         return new OneToManyAssociationBuilder(
             $this,
-            [
+            array(
                 'fieldName'    => $name,
                 'targetEntity' => $targetEntity
-            ],
+            ),
             ClassMetadata::ONE_TO_MANY
         );
     }

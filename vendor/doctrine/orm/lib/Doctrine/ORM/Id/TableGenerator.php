@@ -70,10 +70,9 @@ class TableGenerator extends AbstractIdGenerator
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function generate(
-        EntityManager $em, $entity)
+    public function generate(EntityManager $em, $entity)
     {
         if ($this->_maxValue === null || $this->_nextValue == $this->_maxValue) {
             // Allocate new values
@@ -92,7 +91,7 @@ class TableGenerator extends AbstractIdGenerator
                         $this->_tableName, $this->_sequenceName, $this->_allocationSize
                     );
 
-                    if ($conn->executeUpdate($updateSql, [1 => $currentLevel, 2 => $currentLevel+1]) !== 1) {
+                    if ($conn->executeUpdate($updateSql, array(1 => $currentLevel, 2 => $currentLevel+1)) !== 1) {
                         // no affected rows, concurrency issue, throw exception
                     }
                 } else {

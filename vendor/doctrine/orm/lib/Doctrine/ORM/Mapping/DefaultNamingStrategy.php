@@ -23,7 +23,7 @@ namespace Doctrine\ORM\Mapping;
 /**
  * The default NamingStrategy
  *
- *
+ * 
  * @link    www.doctrine-project.org
  * @since   2.3
  * @author  Fabio B. Silva <fabio.bat.silva@gmail.com>
@@ -53,14 +53,6 @@ class DefaultNamingStrategy implements NamingStrategy
     /**
      * {@inheritdoc}
      */
-    public function embeddedFieldToColumnName($propertyName, $embeddedColumnName, $className = null, $embeddedClassName = null)
-    {
-        return $propertyName.'_'.$embeddedColumnName;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function referenceColumnName()
     {
         return 'id';
@@ -69,7 +61,7 @@ class DefaultNamingStrategy implements NamingStrategy
     /**
      * {@inheritdoc}
      */
-    public function joinColumnName($propertyName, $className = null)
+    public function joinColumnName($propertyName)
     {
         return $propertyName . '_' . $this->referenceColumnName();
     }
@@ -80,15 +72,15 @@ class DefaultNamingStrategy implements NamingStrategy
     public function joinTableName($sourceEntity, $targetEntity, $propertyName = null)
     {
         return strtolower($this->classToTableName($sourceEntity) . '_' .
-            $this->classToTableName($targetEntity));
+                $this->classToTableName($targetEntity));
     }
-
+    
     /**
      * {@inheritdoc}
      */
     public function joinKeyColumnName($entityName, $referencedColumnName = null)
     {
         return strtolower($this->classToTableName($entityName) . '_' .
-            ($referencedColumnName ?: $this->referenceColumnName()));
+                ($referencedColumnName ?: $this->referenceColumnName()));
     }
 }

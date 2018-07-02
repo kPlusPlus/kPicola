@@ -41,7 +41,7 @@ class YamlExporter extends AbstractExporter
      */
     public function exportClassMetadata(ClassMetadataInfo $metadata)
     {
-        $array = [];
+        $array = array();
 
         if ($metadata->isMappedSuperclass) {
             $array['type'] = 'mappedSuperclass';
@@ -85,13 +85,9 @@ class YamlExporter extends AbstractExporter
             $array['uniqueConstraints'] = $metadata->table['uniqueConstraints'];
         }
 
-        if (isset($metadata->table['options'])) {
-            $array['options'] = $metadata->table['options'];
-        }
-
         $fieldMappings = $metadata->fieldMappings;
 
-        $ids = [];
+        $ids = array();
         foreach ($fieldMappings as $name => $fieldMapping) {
             $fieldMapping['column'] = $fieldMapping['columnName'];
 
@@ -118,13 +114,13 @@ class YamlExporter extends AbstractExporter
 
         if ($fieldMappings) {
             if ( ! isset($array['fields'])) {
-                $array['fields'] = [];
+                $array['fields'] = array();
             }
             $array['fields'] = array_merge($array['fields'], $fieldMappings);
         }
 
         foreach ($metadata->associationMappings as $name => $associationMapping) {
-            $cascade = [];
+            $cascade = array();
 
             if ($associationMapping['isCascadeRemove']) {
                 $cascade[] = 'remove';
@@ -146,25 +142,21 @@ class YamlExporter extends AbstractExporter
                 $cascade[] = 'detach';
             }
             if (count($cascade) === 5) {
-                $cascade = ['all'];
+                $cascade = array('all');
             }
 
-            $associationMappingArray = [
+            $associationMappingArray = array(
                 'targetEntity' => $associationMapping['targetEntity'],
                 'cascade'     => $cascade,
-            ];
+            );
 
-            if (isset($associationMapping['fetch'])) {
-                $associationMappingArray['fetch'] = $this->_getFetchModeString($associationMapping['fetch']);
-            }
-
-            if (isset($associationMapping['id']) && $associationMapping['id'] === true) {
+            if (isset($mapping['id']) && $mapping['id'] === true) {
                 $array['id'][$name]['associationKey'] = true;
             }
 
             if ($associationMapping['type'] & ClassMetadataInfo::TO_ONE) {
-                $joinColumns = $associationMapping['isOwningSide'] ? $associationMapping['joinColumns'] : [];
-                $newJoinColumns = [];
+                $joinColumns = $associationMapping['joinColumns'];
+                $newJoinColumns = array();
 
                 foreach ($joinColumns as $joinColumn) {
                     $newJoinColumns[$joinColumn['name']]['referencedColumnName'] = $joinColumn['referencedColumnName'];
@@ -174,12 +166,12 @@ class YamlExporter extends AbstractExporter
                     }
                 }
 
-                $oneToOneMappingArray = [
+                $oneToOneMappingArray = array(
                     'mappedBy'      => $associationMapping['mappedBy'],
                     'inversedBy'    => $associationMapping['inversedBy'],
                     'joinColumns'   => $newJoinColumns,
                     'orphanRemoval' => $associationMapping['orphanRemoval'],
-                ];
+                );
 
                 $associationMappingArray = array_merge($associationMappingArray, $oneToOneMappingArray);
 
@@ -189,22 +181,22 @@ class YamlExporter extends AbstractExporter
                     $array['manyToOne'][$name] = $associationMappingArray;
                 }
             } elseif ($associationMapping['type'] == ClassMetadataInfo::ONE_TO_MANY) {
-                $oneToManyMappingArray = [
+                $oneToManyMappingArray = array(
                     'mappedBy'      => $associationMapping['mappedBy'],
                     'inversedBy'    => $associationMapping['inversedBy'],
                     'orphanRemoval' => $associationMapping['orphanRemoval'],
-                    'orderBy'       => $associationMapping['orderBy'] ?? null
-                ];
+                    'orderBy'       => isset($associationMapping['orderBy']) ? $associationMapping['orderBy'] : null
+                );
 
                 $associationMappingArray = array_merge($associationMappingArray, $oneToManyMappingArray);
                 $array['oneToMany'][$name] = $associationMappingArray;
             } elseif ($associationMapping['type'] == ClassMetadataInfo::MANY_TO_MANY) {
-                $manyToManyMappingArray = [
+                $manyToManyMappingArray = array(
                     'mappedBy'   => $associationMapping['mappedBy'],
                     'inversedBy' => $associationMapping['inversedBy'],
-                    'joinTable'  => $associationMapping['joinTable'] ?? null,
-                    'orderBy'    => $associationMapping['orderBy'] ?? null
-                ];
+                    'joinTable'  => isset($associationMapping['joinTable']) ? $associationMapping['joinTable'] : null,
+                    'orderBy'    => isset($associationMapping['orderBy']) ? $associationMapping['orderBy'] : null
+                );
 
                 $associationMappingArray = array_merge($associationMappingArray, $manyToManyMappingArray);
                 $array['manyToMany'][$name] = $associationMappingArray;
@@ -214,52 +206,6 @@ class YamlExporter extends AbstractExporter
             $array['lifecycleCallbacks'] = $metadata->lifecycleCallbacks;
         }
 
-        $array = $this->processEntityListeners($metadata, $array);
-
-        return $this->yamlDump([$metadata->name => $array], 10);
-    }
-
-    /**
-     * Dumps a PHP array to a YAML string.
-     *
-     * The yamlDump method, when supplied with an array, will do its best
-     * to convert the array into friendly YAML.
-     *
-     * @param array   $array  PHP array
-     * @param integer $inline [optional] The level where you switch to inline YAML
-     *
-     * @return string A YAML string representing the original PHP array
-     */
-    protected function yamlDump($array, $inline = 2)
-    {
-        return Yaml::dump($array, $inline);
-    }
-
-    private function processEntityListeners(ClassMetadataInfo $metadata, array $array) : array
-    {
-        if (0 === \count($metadata->entityListeners)) {
-            return $array;
-        }
-
-        $array['entityListeners'] = [];
-
-        foreach ($metadata->entityListeners as $event => $entityListenerConfig) {
-            $array = $this->processEntityListenerConfig($array, $entityListenerConfig, $event);
-        }
-
-        return $array;
-    }
-
-    private function processEntityListenerConfig(array $array, array $entityListenerConfig, string $event) : array
-    {
-        foreach ($entityListenerConfig as $entityListener) {
-            if (! isset($array['entityListeners'][$entityListener['class']])) {
-                $array['entityListeners'][$entityListener['class']] = [];
-            }
-
-            $array['entityListeners'][$entityListener['class']][$event] = [$entityListener['method']];
-        }
-
-        return $array;
+        return Yaml::dump(array($metadata->name => $array), 10);
     }
 }

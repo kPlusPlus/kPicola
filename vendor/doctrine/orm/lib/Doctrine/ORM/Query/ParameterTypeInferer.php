@@ -45,7 +45,7 @@ class ParameterTypeInferer
      */
     public static function inferType($value)
     {
-        if (is_int($value)) {
+        if (is_integer($value)) {
             return Type::INTEGER;
         }
 
@@ -53,16 +53,12 @@ class ParameterTypeInferer
             return Type::BOOLEAN;
         }
 
-        if ($value instanceof \DateTime || $value instanceof \DateTimeInterface) {
+        if ($value instanceof \DateTime) {
             return Type::DATETIME;
         }
 
-        if ($value instanceof \DateInterval) {
-            return Type::DATEINTERVAL;
-        }
-
         if (is_array($value)) {
-            return is_int(current($value))
+            return is_integer(current($value))
                 ? Connection::PARAM_INT_ARRAY
                 : Connection::PARAM_STR_ARRAY;
         }

@@ -20,11 +20,11 @@
 namespace Doctrine\ORM\Tools;
 
 use Doctrine\Common\Persistence\Proxy;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\UnitOfWork;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Use this logger to dump the identity map during the onFlush event. This is useful for debugging
@@ -69,19 +69,18 @@ class DebugUnitOfWorkListener
     /**
      * Dumps the contents of the identity map into a stream.
      *
-     * @param EntityManagerInterface $em
+     * @param EntityManager $em
      *
      * @return void
      */
-    public function dumpIdentityMap(EntityManagerInterface $em)
+    public function dumpIdentityMap(EntityManager $em)
     {
         $uow = $em->getUnitOfWork();
         $identityMap = $uow->getIdentityMap();
 
-        $fh = fopen($this->file, 'xb+');
+        $fh = fopen($this->file, "x+");
         if (count($identityMap) == 0) {
             fwrite($fh, "Flush Operation [".$this->context."] - Empty identity map.\n");
-
             return;
         }
 
@@ -143,7 +142,7 @@ class DebugUnitOfWorkListener
         if (is_object($var)) {
             $refl = new \ReflectionObject($var);
 
-            return $refl->getShortName();
+            return $refl->getShortname();
         }
 
         return gettype($var);
@@ -176,7 +175,7 @@ class DebugUnitOfWorkListener
             $idstring .= " [REMOVED]";
         } elseif ($state == UnitOfWork::STATE_MANAGED) {
             $idstring .= " [MANAGED]";
-        } elseif ($state == UnitOfWork::STATE_DETACHED) {
+        } elseif ($state == UnitOfwork::STATE_DETACHED) {
             $idstring .= " [DETACHED]";
         }
 
