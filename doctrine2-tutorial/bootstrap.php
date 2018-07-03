@@ -7,13 +7,13 @@ use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 
 
-
 // Create a simple "default" Doctrine ORM configuration for Annotations
 $isDevMode = true;
 $paths = array("/path/to/entity-files");
 
 $dbParams = array(
-	'driver' => 'pdo_mysql',
+	//'driver' => 'pdo_mysql',
+	'driver' => 'mysqli',
 	'user'	=>	'kreso',
 	'password' => 'kreso1005',
 	'dbname'	=> 'sakila',
@@ -35,4 +35,6 @@ $conn = array(
 //$entityManager = EntityManager::create($conn, $config);
 
 $entityManager = EntityManager::create($dbParams, $config);
+
+
  ?>
